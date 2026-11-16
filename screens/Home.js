@@ -31,6 +31,8 @@ export default function Home({ navigation, receitas }) {
     return nomeCombina && categoriaCombina && favoritaCombina;
   });
 
+  const totalFavoritas = receitas.filter((receita) => receita.favorita === true).length;
+
   if (carregando) {
     return (
       <View style={estilos.centro}>
@@ -44,7 +46,7 @@ export default function Home({ navigation, receitas }) {
     <View style={estilos.container}>
       <Cabecalho
         titulo="O que vamos cozinhar?"
-        subtitulo={`${receitasFiltradas.length} receita(s) encontrada(s)`}
+        subtitulo={`${receitasFiltradas.length} receita(s) • ${totalFavoritas} favorita(s)`}
       />
 
       <CampoTexto
