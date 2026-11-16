@@ -38,6 +38,7 @@ export default function Formulario({ navigation, aoSalvar }) {
         .map((item) => item.trim())
         .filter((item) => item !== ''),
       preparo: form.preparo.trim() || 'Sem modo de preparo informado.',
+      favorita: false,
     };
 
     aoSalvar(novaReceita);

@@ -18,6 +18,18 @@ export default function App() {
     setReceitas((anteriores) => [...anteriores, novaReceita]);
   };
 
+  const alternarFavorita = (id) => {
+    setReceitas((anteriores) =>
+      anteriores.map((receita) =>
+        receita.id === id ? { ...receita, favorita: !receita.favorita } : receita
+      )
+    );
+  };
+
+  const excluirReceita = (id) => {
+    setReceitas((anteriores) => anteriores.filter((receita) => receita.id !== id));
+  };
+
   return (
     <NavigationContainer>
       <StatusBar style="light" />
@@ -33,9 +45,17 @@ export default function App() {
 
         <Stack.Screen
           name="Detalhes"
-          component={Detalhes}
           options={({ route }) => ({ title: route.params.receita.nome })}
-        />
+        >
+          {(props) => (
+            <Detalhes
+              {...props}
+              receitas={receitas}
+              aoAlternarFavorita={alternarFavorita}
+              aoExcluir={excluirReceita}
+            />
+          )}
+        </Stack.Screen>
 
         <Stack.Screen name="Formulario" options={{ title: 'Nova Receita' }}>
           {(props) => <Formulario {...props} aoSalvar={adicionarReceita} />}

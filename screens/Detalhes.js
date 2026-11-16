@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ScrollView, Text, View, StyleSheet } from 'react-native';
+import { ScrollView, Text, View, Alert, StyleSheet } from 'react-native';
 
 import Cabecalho from '../components/Cabecalho';
 import Botao from '../components/Botao';
 
-export default function Detalhes({ route }) {
-  const { receita } = route.params;
-  const [favorita, setFavorita] = useState(false);
+export default function Detalhes({ route, navigation, receitas, aoAlternarFavorita, aoExcluir }) {
   const [segundos, setSegundos] = useState(0);
 
   // Cronômetro do tempo na tela, com limpeza ao sair
@@ -16,6 +14,28 @@ export default function Detalhes({ route }) {
     }, 1000);
     return () => clearInterval(intervalo);
   }, []);
+
+  // Busca a versão atual da receita na lista (o parâmetro da rota é só uma "foto" de quando abriu)
+  const receita = receitas.find((item) => item.id === route.params.receita.id);
+
+  // Depois de excluir, a receita deixa de existir por um instante antes da tela fechar
+  if (!receita) {
+    return null;
+  }
+
+  const confirmarExclusao = () => {
+    Alert.alert('Excluir receita', `Deseja excluir "${receita.nome}"?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: () => {
+          navigation.goBack();
+          aoExcluir(receita.id);
+        },
+      },
+    ]);
+  };
 
   return (
     <ScrollView style={estilos.container} contentContainerStyle={estilos.conteudo}>
@@ -38,10 +58,14 @@ export default function Detalhes({ route }) {
 
       <View style={estilos.botao}>
         <Botao
-          titulo={favorita ? 'Remover dos favoritos' : 'Marcar como favorita'}
-          secundario={!favorita}
-          aoPressionar={() => setFavorita(!favorita)}
+          titulo={receita.favorita ? '★ Remover dos favoritos' : '☆ Marcar como favorita'}
+          secundario={!receita.favorita}
+          aoPressionar={() => aoAlternarFavorita(receita.id)}
         />
+      </View>
+
+      <View style={estilos.botao}>
+        <Botao titulo="Excluir receita" secundario aoPressionar={confirmarExclusao} />
       </View>
     </ScrollView>
   );
@@ -73,6 +97,6 @@ const estilos = StyleSheet.create({
     color: '#7f8c8d',
   },
   botao: {
-    marginTop: 16,
+    marginTop: 12,
   },
 });

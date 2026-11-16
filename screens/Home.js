@@ -10,6 +10,7 @@ import { categorias } from '../data/receitas';
 export default function Home({ navigation, receitas }) {
   const [busca, setBusca] = useState('');
   const [categoria, setCategoria] = useState('Todas');
+  const [somenteFavoritas, setSomenteFavoritas] = useState(false);
   const [carregando, setCarregando] = useState(true);
 
   // Simula o carregamento dos dados ao abrir a tela (executa uma vez)
@@ -26,7 +27,8 @@ export default function Home({ navigation, receitas }) {
   const receitasFiltradas = receitas.filter((receita) => {
     const nomeCombina = receita.nome.toLowerCase().includes(busca.toLowerCase());
     const categoriaCombina = categoria === 'Todas' || receita.categoria === categoria;
-    return nomeCombina && categoriaCombina;
+    const favoritaCombina = !somenteFavoritas || receita.favorita === true;
+    return nomeCombina && categoriaCombina && favoritaCombina;
   });
 
   if (carregando) {
@@ -62,6 +64,12 @@ export default function Home({ navigation, receitas }) {
             aoPressionar={() => setCategoria(cat)}
           />
         ))}
+        <Botao
+          titulo="★ Favoritas"
+          pequeno
+          secundario={!somenteFavoritas}
+          aoPressionar={() => setSomenteFavoritas(!somenteFavoritas)}
+        />
       </View>
 
       <FlatList
@@ -69,7 +77,7 @@ export default function Home({ navigation, receitas }) {
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <Card
-            titulo={item.nome}
+            titulo={item.favorita ? `★ ${item.nome}` : item.nome}
             subtitulo={`${item.categoria} • ${item.tempo} min`}
             aoPressionar={() => navigation.navigate('Detalhes', { receita: item })}
           />
