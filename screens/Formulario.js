@@ -27,6 +27,10 @@ export default function Formulario({ navigation, aoSalvar }) {
       setErro('Preencha pelo menos o nome e os ingredientes.');
       return;
     }
+    if (form.tempo !== '' && !(Number(form.tempo) > 0)) {
+      setErro('Informe um tempo de preparo válido, em minutos.');
+      return;
+    }
 
     const novaReceita = {
       id: Date.now(),
