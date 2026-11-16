@@ -19,6 +19,7 @@ export default function Formulario({ navigation, aoSalvar }) {
 
   // Atualiza um campo sem alterar o objeto original (spread)
   const atualizarCampo = (campo, valor) => {
+    setErro(''); // limpa o erro ao digitar
     setForm({ ...form, [campo]: valor });
   };
 
