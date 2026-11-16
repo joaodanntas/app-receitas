@@ -83,7 +83,12 @@ export default function Home({ navigation, receitas }) {
           />
         )}
         ListEmptyComponent={
-          <Text style={estilos.vazio}>Nenhuma receita encontrada.</Text>
+          <Text style={estilos.vazio}>
+            {somenteFavoritas
+              ? 'Você ainda não marcou nenhuma favorita.'
+              : 'Nenhuma receita encontrada.'
+            }
+          </Text>
         }
       />
 
